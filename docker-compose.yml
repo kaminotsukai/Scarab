@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  php:
+    build: ./docker/php
+    volumes:
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/apache/conf-enabled/my-framework.conf:/etc/apache2/conf-enabled/my-framework.conf
+      - ./src:/var/www/html/my-framework
+    ports:
+      - 8888:80
+  mariadb:
+    image: mariadb:10.5.4
+    container_name: mariadb_host
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: abcde123
+      MYSQL_ROOT_PASSWORD: abcde123
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./docker/mariadb/data:/var/lib/mysql
+    ports:
+      - 3333:3306
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_host
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=abcde123
+      - PMA_PORT=3306
+    ports:
+      - 7777:80
+    volumes:
+      - ./docker/phpmyadmin/sessions:/sessions
