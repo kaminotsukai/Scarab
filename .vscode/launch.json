@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "XDebug on docker",
+            "type": "php",
+            "request": "launch",
+            "port": 9001,//php.iniで設定したxdebug用のport番号
+            "pathMappings": {
+                // {docker上のdocument root}:{ローカルのdocument root}
+                "/var/www/html":"/Users/kamimakoto/github-pub/my-framework/src"
+            }
+        }
+    ]
+}
