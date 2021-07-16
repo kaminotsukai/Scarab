@@ -6,7 +6,7 @@ services:
     volumes:
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini
       - ./docker/apache/conf-enabled/my-framework.conf:/etc/apache2/conf-enabled/my-framework.conf
-      - ./src:/var/www/html/my-framework
+      - ./src:/var/www/html
     ports:
       - 8888:80
   mariadb:
