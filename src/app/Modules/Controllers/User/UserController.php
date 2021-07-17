@@ -2,6 +2,8 @@
 
 namespace App\Modules\Controllers\User;
 
+use App\Libs\Core\Exception\InternalServerException;
+
 class UserController
 {
     public function __construct()
