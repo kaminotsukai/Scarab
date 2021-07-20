@@ -1,0 +1,27 @@
+<?php declare(strict_types = 1);
+
+namespace Passion\Database\PDO;
+
+use PDO;
+
+/**
+ * PDOによるデータベース接続クラス
+ */
+class PdoConnector
+{
+    public static ?PDO $connection = null;
+
+    public function connect(): PDO
+    {
+        if (is_null(self::$connection)) {
+            self::$connection = new PDO(
+                'mysql:host=mariadb; dbname=test; charset=utf8mb4',
+                'root',
+                'abcde123'
+            );
+            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // エラー時に例外をスローする
+            self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        }
+        return self::$connection;
+    }
+}

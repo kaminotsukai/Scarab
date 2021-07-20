@@ -19,6 +19,11 @@ return function () {
             $controller = new App\Modules\Controllers\User\UserController();
             $controller->show($params);
         });
+
+        $router->addRoute('GET', '/test', function ($params) {
+            $controller = new App\Modules\Controllers\User\UserController();
+            $controller->show($params);
+        });
     });
 
     // RequestからURIとHTTP Methodを取得する

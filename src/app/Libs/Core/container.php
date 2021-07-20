@@ -10,4 +10,8 @@ return function () {
         $mailer = new SESMailSender();
         return $mailer;
     };
+
+    $container['repository'] = function ($c) {
+        // $repository = new 
+    };
 };
