@@ -2,6 +2,7 @@
 
 namespace Passion\Database\PDO;
 
+use Passion\Config\ApplicationConfig;
 use PDO;
 
 /**
@@ -13,12 +14,10 @@ class PdoConnector
 
     public function connect(): PDO
     {
+        $dbConfig = ApplicationConfig::getDatabase();
+
         if (is_null(self::$connection)) {
-            self::$connection = new PDO(
-                'mysql:host=mariadb; dbname=test; charset=utf8mb4',
-                'root',
-                'abcde123'
-            );
+            self::$connection = new PDO($dbConfig['dns'], $dbConfig['username'], $dbConfig['password']);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // エラー時に例外をスローする
             self::$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }

@@ -13,3 +13,7 @@ $container();
 // ルーティングの定義
 $routes = require __DIR__ . '/../app/Libs/Core/routes.php';
 $routes();
+
+// 設定ファイルの定義
+$config = require __DIR__ . '/../app/Libs/Core/config.php';
+$config();
