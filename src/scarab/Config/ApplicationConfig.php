@@ -1,9 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace Passion\Config;
+namespace Scarab\Config;
 
-use InvalidArgumentException;
-use Passion\Singleton;
+use Scarab\Singleton;
 
 /**
  * アプリケーション全体で共有する設定情報を保持するクラス

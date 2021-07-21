@@ -9,5 +9,5 @@ return function () {
         $config[basename($file, '.php')] = require $file;
     }
 
-    Passion\Config\ApplicationConfig::getInstance()->set($config);
+    Scarab\Config\ApplicationConfig::getInstance()->set($config);
 };

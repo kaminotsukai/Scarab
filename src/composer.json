@@ -9,7 +9,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Passion\\": "passion/"
+            "Scarab\\": "scarab/"
         }
     },
     "require": {

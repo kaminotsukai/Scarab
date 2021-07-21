@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use Passion\Database\BaseMySqlRepository;
+use Scarab\Database\BaseMySqlRepository;
 
 class TestMySqlRepository  extends BaseMySqlRepository implements TestRepositoryInterface
 {

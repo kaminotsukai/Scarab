@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace Passion\Database;
+namespace Scarab\Database;
 
-use Passion\Database\PDO\AbstractSqlRepository;
+use Scarab\Database\PDO\AbstractSqlRepository;
 
 /**
  * MySQL専用の汎用的なリポジトリクラス

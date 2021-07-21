@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace Passion\Database\PDO;
+namespace Scarab\Database\PDO;
 
-use Passion\Config\ApplicationConfig;
+use Scarab\Config\ApplicationConfig;
 use PDO;
 
 /**

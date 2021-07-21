@@ -2,6 +2,8 @@
 
 namespace App\Modules\Controllers;
 
+use Scarab\View\View;
+
 class IndexController
 {
     public function __construct()
@@ -11,6 +13,16 @@ class IndexController
 
     public function index()
     {
-        echo 'IndexController::indexAction()がコールされました。';
+        echo (new View())->render(
+            __DIR__ . '/../Views/index.html',
+            [
+                'user' => [
+                    'id' => 1,
+                    'name' => 'makoto',
+                    'age' => 22,
+                    'company' => 'GIB Japan'
+                ],
+            ]
+        );
     }
 }
