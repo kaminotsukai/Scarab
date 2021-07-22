@@ -3,8 +3,8 @@
 require '../vendor/autoload.php';
 
 // 例外処理
-$handleException = require __DIR__ . '/../app/Libs/Core/handle-exception.php';
-$handleException();
+// $handleException = require __DIR__ . '/../app/Libs/Core/handle-exception.php';
+// $handleException();
 
 // DIコンテナ
 $container = require __DIR__ . '/../app/Libs/Core/container.php';

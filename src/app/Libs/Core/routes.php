@@ -3,28 +3,7 @@
 use App\Libs\Core\Exception\PageNotFoundException;
 
 return function () {
-    $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $router) {
-        $router->addRoute('GET', '/', function ($params) {
-            $controller = new App\Modules\Controllers\IndexController();
-            $controller->index();
-        });
-
-        $router->addRoute('GET', '/users', function ($params) {
-            $controller = new App\Modules\Controllers\User\UserController();
-            $controller->index();
-        });
-
-        // キー + ":" + 値を表す正規表現
-        $router->addRoute('GET', '/users/{id:\d+}', function ($params) {
-            $controller = new App\Modules\Controllers\User\UserController();
-            $controller->show($params);
-        });
-
-        $router->addRoute('GET', '/test', function ($params) {
-            $controller = new App\Modules\Controllers\User\UserController();
-            $controller->show($params);
-        });
-    });
+    $dispatcher = require __DIR__ . '/../../../routes/routes.php';
 
     // RequestからURIとHTTP Methodを取得する
     $httpMethod = $_SERVER['REQUEST_METHOD'];

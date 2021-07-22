@@ -3,6 +3,7 @@
 namespace App\Modules\Controllers\User;
 
 use App\Libs\Core\Exception\InternalServerException;
+use Scarab\Http\Request;
 
 class UserController
 {
@@ -16,8 +17,9 @@ class UserController
         echo 'UserController::indexAction()がコールされました。';
     }
 
-    public function show($params)
+    public function show(Request $request)
     {
-        echo $params['id'];
+        $id = $request->input('id');
+        echo $id;
     }
 }
