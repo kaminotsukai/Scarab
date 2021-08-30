@@ -1,94 +1,18 @@
 <?php
 
-class DB
-{
-}
+use Scarab\Database\DB;
+use Scarab\Database\QueryBuilder;
 
-class QueryBuilder
-{
-    private string $tableName;
-    private array $columns = ['`*`'];
-    private array $wheres = [];
+require 'vendor/autoload.php';
 
-    public function __construct(string $tableName)
-    {
-        $this->tableName = $tableName;
-    }
-
-
-    public function select(string|array $columns): self
-    {
-        $tmpColumns = is_string($columns) ? func_get_args() : $columns;
-        $this->columns = $this->excapeColumns($tmpColumns);
-
-        return $this;
-    }
-
-    public function selectRaw(string|array $columns): self
-    {
-        $this->columns = is_string($columns) ? func_get_args() : $columns;
-
-        return $this;
-    }
-
-    public function where(string $column, string $operator, $value)
-    {
-    }
-
-    public function orWhere(string $column, string $operator, $value)
-    {
-    }
-
-    public function whereNull(string $column, bool $isNull)
-    {
-        if ($isNull) {
-        } else {
-        }
-    }
-
-    public function toSql(): string
-    {
-        $columnsString = implode(', ', $this->getColumns());
-
-        return "select {$columnsString} from {$this->getTableName()};";
-    }
-
-    private function excapeColumns(array $columns)
-    {
-        return array_map(
-            fn (string $column) => $this->escape($column),
-            $columns
-        );
-    }
-
-    // テーブル名やカラム名を``でエスケープする
-    private function escape(string $target)
-    {
-        if (strpos($target, '.') !== false) {
-            // テーブル名.カラム名の場合
-            [$table, $column] = explode('.', $target);
-            return "`{$table}`.`{$column}`";
-        }
-
-        return "`{$target}`";
-    }
-
-    private function getTableName(): string
-    {
-        return $this->tableName;
-    }
-
-    private function getColumns(): array
-    {
-        return $this->columns;
-    }
-}
+$config = require 'app/Libs/Core/config.php';
+$config();
 
 # case 1
 $query = new QueryBuilder('hoge');
 echo $query->toSql() . PHP_EOL;
 
-$expected = "select `*` from hoge;";
+$expected = "select * from hoge;";
 assert($query->toSql() === $expected);
 
 # case 2
@@ -116,5 +40,18 @@ assert($query->toSql() === $expected);
 $query = $query->select('table.*');
 echo $query->toSql() . PHP_EOL;
 
-$expected = "select `table`.`*` from hoge;";
+$expected = "select `table`.* from hoge;";
 assert($query->toSql() === $expected);
+
+# DB
+$query = DB::table('table_name');
+echo $query->toSql() . PHP_EOL;
+$expected = "select * from table_name;";
+assert($query->toSql() === $expected);
+
+$query = DB::table('table_name');
+print_r($query->get());
+
+$expected = [['column1' => 1], ['column2' => 2]];
+$isSame = $query->get() === $expected;
+// assert($isSame);
