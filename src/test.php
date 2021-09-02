@@ -68,10 +68,11 @@ function test_db_connection()
 
 function test_where_expression()
 {
-    $whereExpression = new WhereExpression('column1', '=', 1);
+    $whereExpression = new WhereExpression('column1', '=', 'and');
     $expression = $whereExpression->getExpression();
+    var_dump($expression);
 
-    assert($expression === 'column1 = ?');
+    assert($expression === 'and column1 = ?');
 
     // InvalidArgumentException
     // new WhereExpression('column1', '?', 1);
@@ -79,7 +80,7 @@ function test_where_expression()
 
 function test_where_clause()
 {
-
+    // 条件1つ + 実際の接続
     $query = DB::table('test_table');
     $query->where('column1', '=', 1);
     echo $query->toSql() . PHP_EOL;
@@ -90,11 +91,19 @@ function test_where_clause()
 
     $result = $query->get();
     print_r($result);
+
+    // 条件2つ(or)
+    $query = DB::table('test_table');
+    $query->where('column1', '>=', 1);
+    $query->where('column2', '<=', 3, 'and');
+    echo $query->toSql() . PHP_EOL;
+    $expected = "select * from test_table where column1 >= ? and column2 <= ?;";
+    assert($query->toSql() === $expected);
 }
 
 // test_select_clause();
 // test_db_connection();
-// test_where_expression();
+test_where_expression();
 test_where_clause();
 
 // $dsn = "mysql:host=mariadb;dbname=test";

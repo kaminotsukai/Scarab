@@ -2,6 +2,7 @@
 
 namespace Scarab\Database;
 
+use Scarab\Database\QueryFormatter;
 use Scarab\Database\Expression\WhereExpression;
 
 class QueryBuilder
@@ -41,9 +42,9 @@ class QueryBuilder
         return $this;
     }
 
-    public function where(string $column, string $operator, $value)
+    public function where(string $column, string $operator, $value, string $join = '')
     {
-        $where = new WhereExpression($column, $operator, $value);
+        $where = new WhereExpression($column, $operator, $join);
         $this->wheres[] = $where;
         $this->bindings['where'][] = $value;
     }
@@ -61,17 +62,11 @@ class QueryBuilder
 
     public function toSql(): string
     {
-        $columnsString = implode(', ', $this->getColumns());
-
-        $query =  "select {$columnsString} from {$this->getTableName()}";
-
-        // とりあえずwhereの条件が1つの場合を考える
-        if (count($this->wheres) > 0) {
-            $where = $this->wheres[0];
-            $query .= " where {$where->getExpression()}";
-        }
-
-        return $query . ';';
+        return QueryFormatter::toSql(
+            $this->getColumns(),
+            $this->getTableName(),
+            $this->wheres
+        );
     }
 
     public function getBindings(): array
