@@ -2,11 +2,17 @@
 
 namespace Scarab\Database;
 
+use Scarab\Database\Expression\WhereExpression;
+
 class QueryBuilder
 {
     private string $tableName;
     private array $columns = ['*'];
     private array $wheres = [];
+
+    private array $bindings = [
+        'where' => [],
+    ];
 
     public function __construct(string $tableName)
     {
@@ -15,7 +21,7 @@ class QueryBuilder
 
     public function get(): array
     {
-        return DB::execute($this->toSql());
+        return DB::execute($this->toSql(), $this->getBindings());
     }
 
     // TODO: 引数をstring | arrayに限定する
@@ -37,6 +43,9 @@ class QueryBuilder
 
     public function where(string $column, string $operator, $value)
     {
+        $where = new WhereExpression($column, $operator, $value);
+        $this->wheres[] = $where;
+        $this->bindings['where'][] = $value;
     }
 
     public function orWhere(string $column, string $operator, $value)
@@ -54,7 +63,24 @@ class QueryBuilder
     {
         $columnsString = implode(', ', $this->getColumns());
 
-        return "select {$columnsString} from {$this->getTableName()};";
+        $query =  "select {$columnsString} from {$this->getTableName()}";
+
+        // とりあえずwhereの条件が1つの場合を考える
+        if (count($this->wheres) > 0) {
+            $where = $this->wheres[0];
+            $query .= " where {$where->getExpression()}";
+        }
+
+        return $query . ';';
+    }
+
+    public function getBindings(): array
+    {
+        $bindings = [];
+        foreach ($this->bindings as $values) {
+            $bindings = [...$bindings, ...$values];
+        }
+        return $bindings;
     }
 
     private function excapeColumns(array $columns)

@@ -26,9 +26,12 @@ class DB
     /**
      * クエリを実行する
      */
-    public static function execute(string $query): array
+    public static function execute(string $query, array $bindings): array
     {
         $db = new self;
-        return $db->connection->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $statement = $db->connection->prepare($query);
+        $statement->execute($bindings);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
