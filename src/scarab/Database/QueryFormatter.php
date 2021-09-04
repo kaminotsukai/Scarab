@@ -11,11 +11,17 @@ class QueryFormatter
     public static function toSql(array $columns, string $table, array $wheres)
     {
         $selectClause = self::buildSelectClause($columns);
-        $whereClause = self::buildWhereClause($wheres);
+        $whereClause = empty($wheres) ? null : self::buildWhereClause($wheres);
 
-        return "{$selectClause} from {$table} {$whereClause};";
+        $query = "{$selectClause} from {$table}";
+
+        if ($whereClause !== null) {
+            $query .= " {$whereClause}";
+        }
+        $query .= ';';
+
+        return $query;
     }
-
     /**
      * select句を作成する
      */
@@ -32,7 +38,6 @@ class QueryFormatter
     {
         $clause = 'where';
         foreach ($wheres as $where) {
-            /** @var Scarab\Database\Expression\WhereExpression */
             $clause = "{$clause} {$where->getExpression()}";
         }
 

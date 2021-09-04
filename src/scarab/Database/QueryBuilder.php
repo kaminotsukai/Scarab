@@ -29,7 +29,7 @@ class QueryBuilder
     public function select($columns): self
     {
         $tmpColumns = is_string($columns) ? func_get_args() : $columns;
-        $this->columns = $this->excapeColumns($tmpColumns);
+        $this->columns = $this->escapeColumns($tmpColumns);
 
         return $this;
     }
@@ -47,6 +47,8 @@ class QueryBuilder
         $where = new WhereExpression($column, $operator, $join);
         $this->wheres[] = $where;
         $this->bindings['where'][] = $value;
+
+        return $this;
     }
 
     public function orWhere(string $column, string $operator, $value)
@@ -78,7 +80,7 @@ class QueryBuilder
         return $bindings;
     }
 
-    private function excapeColumns(array $columns)
+    private function escapeColumns(array $columns)
     {
         return array_map(
             fn (string $column) => $this->escape($column),
