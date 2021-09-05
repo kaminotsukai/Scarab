@@ -31,6 +31,37 @@ class QueryBuilder
     }
 
     /**
+     * WHERE条件を追加する
+     *
+     * @param string $column
+     * @param mixed|null $operator
+     * @param mixed|null $value
+     * @return $this
+     */
+    public function where(string $column, $operator = null, $value = null): self
+    {
+        // TODO: SQLインジェクション対策
+        [$operator, $value] = $this->prepareValueAndOperator($operator, $value, func_num_args() === 2);
+
+        if (str_contains($this->query, 'WHERE')) {
+            $this->query .= " AND ${column} ${operator} ${value}";
+        } else {
+            $this->query .= " WHERE ${column} ${operator} ${value}";
+        }
+
+        return $this;
+    }
+
+    private function prepareValueAndOperator($operator = null, $value = null, bool $useDefault): array
+    {
+        if ($useDefault) {
+            return ['=', $operator];
+        } else {
+            return [$operator, $value];
+        }
+    }
+
+    /**
      * SQLクエリを取得する
      *
      * @return string
