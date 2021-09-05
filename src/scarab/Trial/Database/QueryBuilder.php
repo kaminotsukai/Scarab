@@ -2,6 +2,8 @@
 
 namespace Scarab\Trial\Database;
 
+use InvalidArgumentException;
+
 /**
  * SQLを構築する
  */
@@ -59,6 +61,31 @@ class QueryBuilder
         } else {
             return [$operator, $value];
         }
+    }
+
+    /**
+     * クエリに"order by"句を追加
+     *
+     * @param string $column
+     * @param string $direction
+     * @return $this
+     */
+    public function orderBy(string $column, string $direction = 'ASC'): self
+    {
+        $direction = strtoupper($direction);
+
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            throw new InvalidArgumentException('Order direction must be "ASC" or "DESC".');
+        }
+
+        $this->query .= " ORDER BY ${column} ${direction}";
+
+        return $this;
+    }
+
+    public function get()
+    {
+        $this->query;
     }
 
     /**
