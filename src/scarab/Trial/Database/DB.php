@@ -16,29 +16,22 @@ class DB
 		$this->pdo = $pdo;
 	}
 
-	public function beginTransaction(): void
+	/**
+	 * クエリを実行する
+	 * SQLインジェクション対策はなし
+	 *
+	 * @param string $query
+	 * @return array
+	 */
+	public function exec(string $query): array
 	{
-		$this->pdo->beginTransaction();
+		$statement = $this->pdo->query($query);
+		return $statement->fetchAll();
 	}
 
-	public function commit(): void
+	public function table(string $table): QueryBuilder
 	{
-		$this->pdo->commit();
-	}
-
-	public function rollback(): void
-	{
-		$this->pdo->rollBack();
-	}
-
-	public function exec(string $query): void
-	{
-		$this->pdo->exec($query);
-	}
-
-	public static function table(string $table): QueryBuilder
-	{
-		return new QueryBuilder($table);
+		return new QueryBuilder($this, $table);
 	}
 }
 

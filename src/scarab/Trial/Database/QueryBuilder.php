@@ -9,12 +9,17 @@ use InvalidArgumentException;
  */
 class QueryBuilder
 {
+    private DB $connection;
+
     private string $table;
 
     private string $query;
 
-    public function __construct(string $table)
-    {
+    public function __construct(
+        DB $connection,
+        string $table
+    ) {
+        $this->connection = $connection;
         $this->table = $table;
     }
 
@@ -83,9 +88,9 @@ class QueryBuilder
         return $this;
     }
 
-    public function get()
+    public function get(): array
     {
-        //
+        return $this->connection->exec($this->query);
     }
 
     /**
@@ -98,3 +103,4 @@ class QueryBuilder
         return $this->query;
     }
 }
+
