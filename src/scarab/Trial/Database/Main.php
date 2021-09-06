@@ -33,6 +33,10 @@ class Main
 		// GET
 		print_r($db->table('users')->select()->orderBy('name')->get());
 		print_r($db->table('users')->select(['id'])->orderBy('name')->get());
+
+		// INSERT
+		$db->table('users')->insert(['name' => 'yamada', 'email' => 'yamada@gmail.com', 'text' => 'iiiiiii']);
+		$db->table('users')->insert(['id' => 5]);
     }
 }
 

@@ -24,6 +24,23 @@ class QueryBuilder
     }
 
     /**
+     * INSERT
+     * TODO: bulk insert対応する
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function insert(array $data): bool
+    {
+        $columns = implode(', ', array_keys($data));
+        $placeholder = implode(', ', array_fill(0, count($data), '?'));
+
+        $this->query = "INSERT INTO {$this->table} (${columns}) VALUES (${placeholder})";
+
+        return $this->connection->insert($this->query, array_values($data));
+    }
+
+    /**
      * SELECTするカラムをセットする
      *
      * @param array $columns
