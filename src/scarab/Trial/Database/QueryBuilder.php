@@ -54,7 +54,7 @@ class QueryBuilder
         return $this;
     }
 
-    private function prepareValueAndOperator($operator = null, $value = null, bool $useDefault): array
+    private function prepareValueAndOperator($operator = null, $value = null, bool $useDefault = true): array
     {
         if ($useDefault) {
             return ['=', $operator];
@@ -85,7 +85,7 @@ class QueryBuilder
 
     public function get()
     {
-        $this->query;
+        //
     }
 
     /**
