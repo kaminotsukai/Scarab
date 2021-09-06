@@ -13,7 +13,7 @@ return [
             'port' => 3306,
             'database' => 'test',
             'username' => 'test',
-            'password' => 'password',
+            'password' => 'abcde123',
             'unix_socket' => '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
