@@ -11,6 +11,7 @@ class Main
 {
     public function main()
     {
+		// TODO: ここはファサードにするか、DIコンテナに入れるかしてどこからでも呼び出せるようにしたい
 		$pdo = new PDO("mysql:host=127.0.0.1; dbname=security;", 'root', 'password');
 		$db = new DB($pdo);
 

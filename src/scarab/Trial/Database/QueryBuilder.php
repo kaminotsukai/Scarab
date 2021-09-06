@@ -15,6 +15,10 @@ class QueryBuilder
 
     private string $query;
 
+    private array $bindings = [
+        'where' => []
+    ];
+
     public function __construct(
         DB $connection,
         string $table
@@ -73,6 +77,7 @@ class QueryBuilder
             $this->query .= " WHERE ${column} ${operator} ${value}";
         }
 
+        // select * from users where id = ?;
         return $this;
     }
 
