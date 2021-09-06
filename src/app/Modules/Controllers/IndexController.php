@@ -13,6 +13,7 @@ class IndexController
 
     public function index()
     {
+
         echo (new View())->render(
             __DIR__ . '/../Views/index.html',
             [
