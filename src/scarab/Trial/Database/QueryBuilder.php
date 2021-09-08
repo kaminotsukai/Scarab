@@ -81,7 +81,8 @@ class QueryBuilder
         // TODO: SQLインジェクション対策
         [$operator, $value] = $this->prepareValueAndOperator($operator, $value, func_num_args() === 2);
 
-        $this->wheres[] = [$column, $operator, $value, 'AND'];
+        $this->wheres[] = [$column, $operator, 'AND'];
+        $this->bindings['where'][] = $value;
 
         return $this;
     }
@@ -117,7 +118,10 @@ class QueryBuilder
 
     public function get(): array
     {
-        return $this->connection->exec($this->query);
+        $query = $this->toSql();
+        $bindings = $this->getBindings();
+
+        return $this->connection->query($query, $bindings);
     }
 
     /**
@@ -134,12 +138,12 @@ class QueryBuilder
             $whereClause = "WHERE";
 
             foreach ($this->wheres as $index => $where) {
-                [$col, $op, $val, $join] = $where;
+                [$col, $op, $join] = $where;
 
                 if ($index === 0) {
-                    $whereClause .= " {$col} {$op} {$val}";
+                    $whereClause .= " {$col} {$op} ?";
                 } else {
-                    $whereClause .= " {$join} {$col} {$op} {$val}";
+                    $whereClause .= " {$join} {$col} {$op} ?";
                 }
             }
             $query = $query . " {$whereClause}";
@@ -161,5 +165,15 @@ class QueryBuilder
         }
 
         return $query;
+    }
+
+    /**
+     * バインドパラメータを取得する
+     *
+     * @return array
+     */
+    public function getBindings(): array
+    {
+        return $this->bindings['where'];
     }
 }

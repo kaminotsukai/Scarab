@@ -31,6 +31,18 @@ class DB
 		return $statement->fetchAll();
 	}
 
+	/**
+	 * クエリを実行する
+	 * SQLインジェクション対策あり
+	 */
+	public function query(string $query, array $bindings = []): array
+	{
+		$statement = $this->pdo->prepare($query);
+		$statement->execute($bindings);
+
+		return $statement->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	public function insert(string $query, array $bindings = []): bool
 	{
 		$statement = $this->pdo->prepare($query);
