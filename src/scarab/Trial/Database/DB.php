@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Scarab\Trial\Database;
 
@@ -29,6 +31,18 @@ class DB
 		return $statement->fetchAll();
 	}
 
+	/**
+	 * クエリを実行する
+	 * SQLインジェクション対策あり
+	 */
+	public function query(string $query, array $bindings = []): array
+	{
+		$statement = $this->pdo->prepare($query);
+		$statement->execute($bindings);
+
+		return $statement->fetchAll(PDO::FETCH_ASSOC);
+	}
+
 	public function insert(string $query, array $bindings = []): bool
 	{
 		$statement = $this->pdo->prepare($query);
@@ -54,12 +68,8 @@ class DB
 	public function getPdoParamType($value): ?int
 	{
 		if (is_int($value)) return PDO::PARAM_INT;
-        if (is_string($value)) return PDO::PARAM_STR;
-        if (is_null($value)) return PDO::PARAM_NULL;
-        return null;
+		if (is_string($value)) return PDO::PARAM_STR;
+		if (is_null($value)) return PDO::PARAM_NULL;
+		return null;
 	}
 }
-
-
-
-

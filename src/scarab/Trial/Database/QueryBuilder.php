@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Scarab\Trial\Database;
 
@@ -14,6 +16,15 @@ class QueryBuilder
     private string $table;
 
     private string $query;
+
+    /** select句のカラム */
+    private array $columns = ['*'];
+
+    /** where句の条件 */
+    private array $wheres = [];
+
+    /** order by句の条件 */
+    private array $orders = [];
 
     private array $bindings = [
         'where' => []
@@ -48,12 +59,11 @@ class QueryBuilder
      * SELECTするカラムをセットする
      *
      * @param array $columns
-     * @return $this
+     * @return self
      */
     public function select(array $columns = ['*']): self
     {
-        $columns = implode(', ', $columns);
-        $this->query = "SELECT ${columns} FROM {$this->table}";
+        $this->columns = $columns;
 
         return $this;
     }
@@ -71,13 +81,9 @@ class QueryBuilder
         // TODO: SQLインジェクション対策
         [$operator, $value] = $this->prepareValueAndOperator($operator, $value, func_num_args() === 2);
 
-        if (str_contains($this->query, 'WHERE')) {
-            $this->query .= " AND ${column} ${operator} ${value}";
-        } else {
-            $this->query .= " WHERE ${column} ${operator} ${value}";
-        }
+        $this->wheres[] = [$column, $operator, 'AND'];
+        $this->bindings['where'][] = $value;
 
-        // select * from users where id = ?;
         return $this;
     }
 
@@ -105,14 +111,17 @@ class QueryBuilder
             throw new InvalidArgumentException('Order direction must be "ASC" or "DESC".');
         }
 
-        $this->query .= " ORDER BY ${column} ${direction}";
+        $this->orders[] = [$column, $direction];
 
         return $this;
     }
 
     public function get(): array
     {
-        return $this->connection->exec($this->query);
+        $query = $this->toSql();
+        $bindings = $this->getBindings();
+
+        return $this->connection->query($query, $bindings);
     }
 
     /**
@@ -122,7 +131,49 @@ class QueryBuilder
      */
     public function toSql(): string
     {
-        return $this->query;
+        $columns = implode(', ', $this->columns);
+        $query = "SELECT {$columns} FROM {$this->table}";
+
+        if (!empty($this->wheres)) {
+            $whereClause = "WHERE";
+
+            foreach ($this->wheres as $index => $where) {
+                [$col, $op, $join] = $where;
+
+                if ($index === 0) {
+                    $whereClause .= " {$col} {$op} ?";
+                } else {
+                    $whereClause .= " {$join} {$col} {$op} ?";
+                }
+            }
+            $query = $query . " {$whereClause}";
+        }
+
+        if (!empty($this->orders)) {
+            $orderByClause = "ORDER BY";
+
+            foreach ($this->orders as $index => $order) {
+                [$col, $dir] = $order;
+
+                if ($index === 0) {
+                    $orderByClause .= " {$col} {$dir}";
+                } else {
+                    $orderByClause .= ", {$col} {$dir}";
+                }
+            }
+            $query = $query . " {$orderByClause}";
+        }
+
+        return $query;
+    }
+
+    /**
+     * バインドパラメータを取得する
+     *
+     * @return array
+     */
+    public function getBindings(): array
+    {
+        return $this->bindings['where'];
     }
 }
-
